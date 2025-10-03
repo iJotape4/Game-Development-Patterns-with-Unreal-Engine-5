@@ -23,4 +23,11 @@ public:
 	virtual void OnGameplayTaskActivated(UGameplayTask& Task) override;
 	virtual void OnGameplayTaskDeactivated(UGameplayTask& Task) override;
 	virtual void OnGameplayTaskInitialized(UGameplayTask& Task) override;
+	UBTT_AttackTarget();
+
+	// Blackboard key holding the target (Actor/Object)
+	UPROPERTY(EditAnywhere, Category="Blackboard")
+	FBlackboardKeySelector TargetKey;
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };
