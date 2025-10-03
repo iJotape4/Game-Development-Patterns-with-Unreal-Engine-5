@@ -2,6 +2,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "RTS_AI/EliteUnit.h"
+#include "ControllableUnit.h" // Added for interface Execute_ calls
 
 UGameplayTasksComponent* UBTT_AttackTarget::GetGameplayTasksComponent(const UGameplayTask& Task) const
 {
@@ -52,8 +53,16 @@ EBTNodeResult::Type UBTT_AttackTarget::ExecuteTask(UBehaviorTreeComponent& Owner
 	UObject* TargetObj = BB->GetValueAsObject(TargetKey.SelectedKeyName);
 	if (!TargetObj) return EBTNodeResult::Failed;
 
-	Elite->AttackTarget(TargetObj);
+	// Use interface Execute_ method instead of calling the event directly to avoid assert.
+	if (Elite->GetClass()->ImplementsInterface(UControllableUnit::StaticClass()))
+	{
+		IControllableUnit::Execute_AttackTarget(Elite, TargetObj);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BTT_AttackTarget: %s does NOT implement ControllableUnit interface"), *Elite->GetName());
+		return EBTNodeResult::Failed;
+	}
 
 	return EBTNodeResult::Succeeded;
 }
-
