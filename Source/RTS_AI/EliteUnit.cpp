@@ -17,7 +17,11 @@ void AEliteUnit::Init(UBlackboardComponent* inBlackboard)
 void AEliteUnit::StopMoving_Implementation()
 {
 	_isMoving = false;
-	
+	if (!_Blackboard)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Blackboard is null"));
+		return;
+	}
 	_Blackboard->SetValueAsBool("HasMoveLocation", false);
 	_Blackboard->ClearValue("MoveToLocation");
 	
@@ -26,6 +30,12 @@ void AEliteUnit::StopMoving_Implementation()
 void AEliteUnit::SetMoveLocation_Implementation(FVector targetLocation)
 {
 	_isMoving = true;
+
+	if (!_Blackboard)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Blackboard is null"));
+		return;
+	}
 	
 	_Blackboard->SetValueAsBool("HasMoveLocation", true);
 	_Blackboard->SetValueAsVector("MoveToLocation", targetLocation);
