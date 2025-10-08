@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Actor.h"
 #include "GuardTower_CH5_1.generated.h"
 
@@ -26,6 +27,20 @@ class RTS_AI_API AGuardTower_CH5_1 : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	TObjectPtr<UArrowComponent> _Arrow;
 
+private:
+	FOnTimelineFloat OnTimeline_Update;
+	FOnTimelineEventStatic onTimeline_Finished;
+
+	UFUNCTION()
+	void Handle_RotateLight_Update(float val);
+
+	UFUNCTION()
+	void Handle_RotateLight_Finished();
+
+	void StartRotation();
+	void StopRotation();
+
+
 public:	
 	// Sets default values for this actor's properties
 	AGuardTower_CH5_1();
@@ -44,4 +59,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _DetectionRadius;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<UTimelineComponent> T_RotateLight;
+
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UCurveFloat>_Curve;
 };

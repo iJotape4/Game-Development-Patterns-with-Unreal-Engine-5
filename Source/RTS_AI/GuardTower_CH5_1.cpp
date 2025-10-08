@@ -5,6 +5,22 @@
 #include "GameFramework/Character.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+void AGuardTower_CH5_1::Handle_RotateLight_Update(float val)
+{
+}
+
+void AGuardTower_CH5_1::Handle_RotateLight_Finished()
+{
+}
+
+void AGuardTower_CH5_1::StartRotation()
+{
+}
+
+void AGuardTower_CH5_1::StopRotation()
+{
+}
+
 AGuardTower_CH5_1::AGuardTower_CH5_1()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,6 +43,10 @@ AGuardTower_CH5_1::AGuardTower_CH5_1()
 	
 	_Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	_Arrow->SetupAttachment(_LightMesh);
+
+	T_RotateLight = CreateDefaultSubobject<UTimelineComponent>(TEXT("T_RotateLight"));
+	OnTimeline_Update.BindUFunction(this, FName("Handle_RotateLight_Update"));
+	onTimeline_Finished.BindUFunction(this, FName("Handle_RotateLight_Finished"));
 }
 
 void AGuardTower_CH5_1::Tick(float DeltaTime)
