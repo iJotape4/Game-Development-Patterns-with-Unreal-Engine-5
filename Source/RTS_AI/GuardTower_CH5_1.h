@@ -28,7 +28,7 @@ class RTS_AI_API AGuardTower_CH5_1 : public AActor
 	TObjectPtr<UArrowComponent> _Arrow;
 
 private:
-	FOnTimelineFloat OnTimeline_Update;
+	FOnTimelineFloat onTimeline_Update;
 	FOnTimelineEventStatic onTimeline_Finished;
 
 	UFUNCTION()
@@ -46,6 +46,7 @@ public:
 	AGuardTower_CH5_1();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -65,5 +66,5 @@ protected:
 	TObjectPtr<UTimelineComponent> T_RotateLight;
 
 	UPROPERTY(EditAnywhere)
-	TSoftObjectPtr<UCurveFloat>_Curve;
+	UCurveFloat* _Curve;
 };

@@ -45,7 +45,7 @@ AGuardTower_CH5_1::AGuardTower_CH5_1()
 	_Arrow->SetupAttachment(_LightMesh);
 
 	T_RotateLight = CreateDefaultSubobject<UTimelineComponent>(TEXT("T_RotateLight"));
-	OnTimeline_Update.BindUFunction(this, FName("Handle_RotateLight_Update"));
+	onTimeline_Update.BindUFunction(this, FName("Handle_RotateLight_Update"));
 	onTimeline_Finished.BindUFunction(this, FName("Handle_RotateLight_Finished"));
 }
 
@@ -83,5 +83,18 @@ void AGuardTower_CH5_1::Tick(float DeltaTime)
 			}
 		}
 	}
+}
+
+void AGuardTower_CH5_1::BeginPlay()
+{
+	Super::BeginPlay();
+	if (_Curve == nullptr) { return; }
+
+	if(_Curve == nullptr) { return;}
+	T_RotateLight->AddInterpFloat(_Curve, onTimeline_Update, FName("Alpha"));
+	T_RotateLight->SetTimelineFinishedFunc(onTimeline_Finished);
+	T_RotateLight->SetLooping(false);
+	T_RotateLight->SetIgnoreTimeDilation(true);
+	StartRotation();
 }
 
