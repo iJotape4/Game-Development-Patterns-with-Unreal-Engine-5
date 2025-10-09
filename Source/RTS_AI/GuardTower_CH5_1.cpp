@@ -1,6 +1,8 @@
 #include "GuardTower_CH5_1.h"
 
+#include "EliteUnit.h"
 #include "Components/ArrowComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -58,40 +60,67 @@ AGuardTower_CH5_1::AGuardTower_CH5_1()
 	_Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	_Arrow->SetupAttachment(_LightMesh);
 
+	 _Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	_Sphere->SetupAttachment(_LightMesh);
+	_Sphere->OnComponentBeginOverlap.AddDynamic(this, &AGuardTower_CH5_1::OnSphereOverlapBegin);
+	_Sphere->OnComponentEndOverlap.AddDynamic(this, &AGuardTower_CH5_1::OnSphereOverlapEnd);
+
 	T_RotateLight = CreateDefaultSubobject<UTimelineComponent>(TEXT("T_RotateLight"));
 	onTimeline_Update.BindUFunction(this, FName("Handle_RotateLight_Update"));
 	onTimeline_Finished.BindUFunction(this, FName("Handle_RotateLight_Finished"));
 }
 
-void AGuardTower_CH5_1::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	
-	FVector startLocation = _Arrow->GetComponentLocation();
-	FVector endLocation = _Arrow->GetComponentLocation() + (_Arrow->GetForwardVector() * _DetectionRange);
-	FHitResult hit;
-	TArray<AActor*> ActorsToIgnore;
-	UKismetSystemLibrary::SphereTraceSingle(GetWorld(), startLocation, endLocation, _DetectionRadius,
-		UEngineTypes::ConvertToTraceType(ECC_Visibility), false,
-		ActorsToIgnore, EDrawDebugTrace::ForOneFrame, hit, true);
-
-	ACharacter* otherCasted = Cast<ACharacter>(hit.GetActor());
-	_EnemySpotted = (otherCasted != nullptr);
-
-	if (_EnemySpotted) StopRotation();
-
-}
 
 void AGuardTower_CH5_1::BeginPlay()
 {
 	Super::BeginPlay();
-	if (_Curve == nullptr) { return; }
 
-	if(_Curve == nullptr) { return;}
+	if (_Curve == nullptr) { return; }
 	T_RotateLight->AddInterpFloat(_Curve, onTimeline_Update, FName("Alpha"));
 	T_RotateLight->SetTimelineFinishedFunc(onTimeline_Finished);
 	T_RotateLight->SetLooping(false);
 	T_RotateLight->SetIgnoreTimeDilation(true);
 	StartRotation();
 }
+
+void AGuardTower_CH5_1::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& SweepResult)
+{
+	if (_EnemyUnit != nullptr) { return; }
+
+	_EnemyUnit = Cast<AEliteUnit> (OtherActor);
+	
+	//If the cast fails, returns a nullptr
+	if (_EnemyUnit == nullptr) { return; }
+	
+	FHitResult hit(ForceInit);
+	FVector start = _Arrow->GetComponentLocation();
+	FVector end = _EnemyUnit->GetActorLocation();
+
+	//performs a line trace (raycast) from start to end in the game world,
+	//ignoring the _EnemyUnit actor.
+	//It uses Unreal Engine's UKismetSystemLibrary::LineTraceSingle
+	//to check if there is a clear line of sight between the guard
+	//tower and the enemy unit. If the trace hits something (i.e., the line is blocked),
+	//the function returns early 
+	if (UKismetSystemLibrary::LineTraceSingle(
+		GetWorld(), start, end,
+		UEngineTypes::ConvertToTraceType(ECC_Visibility),
+		false, {_EnemyUnit},
+		EDrawDebugTrace::ForDuration, hit, true,
+		FLinearColor::Red, FLinearColor::Green, 0.5f))
+	{return;}
+
+	_EnemySpotted = true;
+	StopRotation();
+}
+
+void AGuardTower_CH5_1::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	_EnemySpotted = false;
+	_EnemyUnit = nullptr;
+	StartRotation();
+}
+
 
