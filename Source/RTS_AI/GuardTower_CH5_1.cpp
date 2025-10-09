@@ -7,36 +7,6 @@
 #include "GameFramework/Character.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-void AGuardTower_CH5_1::Handle_RotateLight_Update(float val)
-{
-	_LightPivot->SetRelativeRotation(
-		FRotator(0.f, FMath::Lerp(-40.f, 40.f, val), 0.f)
-		);
-}
-
-void AGuardTower_CH5_1::Handle_RotateLight_Finished()
-{
-	_RotateForward = !_RotateForward;
-	StartRotation();
-}
-
-void AGuardTower_CH5_1::StartRotation()
-{
-	if(_RotateForward)
-	{
-		T_RotateLight->Play();
-	}
-	else
-	{
-		T_RotateLight->Reverse();
-	}
-}
-
-void AGuardTower_CH5_1::StopRotation()
-{
-	T_RotateLight->Stop();
-}
-
 AGuardTower_CH5_1::AGuardTower_CH5_1()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -70,7 +40,6 @@ AGuardTower_CH5_1::AGuardTower_CH5_1()
 	onTimeline_Finished.BindUFunction(this, FName("Handle_RotateLight_Finished"));
 }
 
-
 void AGuardTower_CH5_1::BeginPlay()
 {
 	Super::BeginPlay();
@@ -81,6 +50,35 @@ void AGuardTower_CH5_1::BeginPlay()
 	T_RotateLight->SetLooping(false);
 	T_RotateLight->SetIgnoreTimeDilation(true);
 	StartRotation();
+}
+
+void AGuardTower_CH5_1::Handle_RotateLight_Update(float val)
+{
+	_LightPivot->SetRelativeRotation(
+		FRotator(0.f, FMath::Lerp(-40.f, 40.f, val), 0.f));
+}
+
+void AGuardTower_CH5_1::Handle_RotateLight_Finished()
+{
+	_RotateForward = !_RotateForward;
+	StartRotation();
+}
+
+void AGuardTower_CH5_1::StartRotation()
+{
+	if(_RotateForward)
+	{
+		T_RotateLight->Play();
+	}
+	else
+	{
+		T_RotateLight->Reverse();
+	}
+}
+
+void AGuardTower_CH5_1::StopRotation()
+{
+	T_RotateLight->Stop();
 }
 
 void AGuardTower_CH5_1::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -122,5 +120,3 @@ void AGuardTower_CH5_1::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedCompon
 	_EnemyUnit = nullptr;
 	StartRotation();
 }
-
-
