@@ -7,18 +7,32 @@
 
 void AGuardTower_CH5_1::Handle_RotateLight_Update(float val)
 {
+	_LightPivot->SetRelativeRotation(
+		FRotator(0.f, FMath::Lerp(-40.f, 40.f, val), 0.f)
+		);
 }
 
 void AGuardTower_CH5_1::Handle_RotateLight_Finished()
 {
+	_RotateForward = !_RotateForward;
+	StartRotation();
 }
 
 void AGuardTower_CH5_1::StartRotation()
 {
+	if(_RotateForward)
+	{
+		T_RotateLight->Play();
+	}
+	else
+	{
+		T_RotateLight->Reverse();
+	}
 }
 
 void AGuardTower_CH5_1::StopRotation()
 {
+	T_RotateLight->Stop();
 }
 
 AGuardTower_CH5_1::AGuardTower_CH5_1()
@@ -64,25 +78,8 @@ void AGuardTower_CH5_1::Tick(float DeltaTime)
 	ACharacter* otherCasted = Cast<ACharacter>(hit.GetActor());
 	_EnemySpotted = (otherCasted != nullptr);
 
-	if(!_EnemySpotted)
-	{
-		if(_RotateForward)
-		{
-			_LightPivot->AddLocalRotation(FRotator(0.0, 0.2, 0.0));
-			if(FMath::IsNearlyEqual(_LightPivot->GetRelativeRotation().Yaw, 40.f))
-			{
-				_RotateForward = false;
-			}
-		}
-		else
-		{
-			_LightPivot->AddLocalRotation(FRotator(0.0, -0.2, 0.0));
-			if(FMath::IsNearlyEqual(_LightPivot->GetRelativeRotation().Yaw, -40.f))
-			{
-				_RotateForward = true;
-			}
-		}
-	}
+	if (_EnemySpotted) StopRotation();
+
 }
 
 void AGuardTower_CH5_1::BeginPlay()
