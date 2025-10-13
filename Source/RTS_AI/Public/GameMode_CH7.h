@@ -15,9 +15,15 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* Exiting) override;
 
-	virtual void BeginPlay() override;
 
 protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<APlayerController_Ch7> _PlayerController;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<TObjectPtr<AAIController_CH7>> _AIControllers;
+	virtual void BeginPlay() override;
+	
 	UFUNCTION()
 	void Handle_ControllerDeath(AController* casuer, int points);
 };

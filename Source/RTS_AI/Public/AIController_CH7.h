@@ -12,5 +12,9 @@ UCLASS(Abstract)
 class RTS_AI_API AAIController_CH7 : public AAIController
 {
 	GENERATED_BODY()
-
+public:
+	void Init();
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<AAIUnit_CH7> _Unit;
 };

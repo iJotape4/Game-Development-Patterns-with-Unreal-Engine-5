@@ -6,17 +6,41 @@
 
 void AGameMode_CH7::PostLogin(APlayerController* NewPlayer)
 {
+	if (APlayerController_Ch7* castedPCb= Cast<APlayerController_Ch7>(NewPlayer))
+	{
+		_PlayerController = castedPCb;
+		_PlayerController->Init();
+	}
 	Super::PostLogin(NewPlayer);
 }
 
 void AGameMode_CH7::Logout(AController* Exiting)
 {
 	Super::Logout(Exiting);
+	if (Exiting == _PlayerController)
+	{
+		_PlayerController = nullptr;
+	}
+	Super::Logout(Exiting);
 }
 
 void AGameMode_CH7::BeginPlay()
 {
+
 	Super::BeginPlay();
+	TArray<AActor*> outActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIController::StaticClass(), outActors);
+
+	for (AActor* actor : outActors)
+	{
+		_AIControllers.Add(Cast<AAIController_CH7>(actor));
+	}
+
+
+	for (AAIController_CH7* ai : _AIControllers)
+	{
+		ai->Init();
+	}
 }
 
 void AGameMode_CH7::Handle_ControllerDeath(AController* casuer, int points)

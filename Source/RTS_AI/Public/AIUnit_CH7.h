@@ -14,8 +14,14 @@ class RTS_AI_API AAIUnit_CH7 : public APawn
 
 public:
 	AAIUnit_CH7();
-
+	void Init();
+	
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int _PointValue;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr <UHealthComponent> _HealthComp;
+	UFUNCTION()
+	void Handle_HealthDeath(AController* causer);
+// protected:
+// 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+// 	int _PointValue;
 };

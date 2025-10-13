@@ -16,12 +16,12 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACharacter_CH7> _CharacterClass;
+	TSubclassOf<APawn> _PlayerPawn;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<ACharacter_CH7> _Character;
 
-	UPROPERTY(EditAnywhere)
+	/*UPROPERTY(EditAnywhere)
 	TSubclassOf<UWidget_Score_CH7> _ScoreWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UWidget_Score_CH7> _ScoreWidget;
+	TObjectPtr<UWidget_Score_CH7> _ScoreWidget;*/
 };
