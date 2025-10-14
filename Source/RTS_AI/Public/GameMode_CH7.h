@@ -25,5 +25,5 @@ protected:
 	virtual void BeginPlay() override;
 	
 	UFUNCTION()
-	void Handle_ControllerDeath(AController* casuer, int points);
+	void Handle_ControllerDeath(AController* causer, int points);
 };

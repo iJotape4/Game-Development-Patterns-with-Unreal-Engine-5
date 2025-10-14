@@ -13,6 +13,7 @@ class RTS_AI_API APlayerController_Ch7 : public APlayerController
 
 public:
 	void Init();
+	void AddPoints(int Points);
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -20,8 +21,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<ACharacter_CH7> _Character;
 
-	/*UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<UWidget_Score_CH7> _ScoreWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UWidget_Score_CH7> _ScoreWidget;*/
+	TObjectPtr<UWidget_Score_CH7> _ScoreWidget;
+
+protected:
+	int _Points;
 };

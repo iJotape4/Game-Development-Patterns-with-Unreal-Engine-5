@@ -40,9 +40,11 @@ void AGameMode_CH7::BeginPlay()
 	for (AAIController_CH7* ai : _AIControllers)
 	{
 		ai->Init();
+		ai->OnControllerDeath.AddDynamic(this, &AGameMode_CH7::Handle_ControllerDeath);
 	}
 }
 
 void AGameMode_CH7::Handle_ControllerDeath(AController* casuer, int points)
 {
+	_PlayerController->AddPoints(points);
 }

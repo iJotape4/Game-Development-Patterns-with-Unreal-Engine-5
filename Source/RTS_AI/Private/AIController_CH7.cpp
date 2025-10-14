@@ -7,6 +7,14 @@ void AAIController_CH7::Init()
 	if (APawn* pawn = GetPawn())
 	{
 		if (_Unit = Cast<AAIUnit_CH7>(pawn))
+		{
 			_Unit->Init();
+			_Unit->onUnitDeath.AddDynamic(this, &AAIController_CH7::Handle_UnitDeath);
+		}
 	}
+}
+
+void AAIController_CH7::Handle_UnitDeath(AController* causer, int points)
+{
+	OnControllerDeath.Broadcast(causer, points);
 }

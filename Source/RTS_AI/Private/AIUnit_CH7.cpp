@@ -14,4 +14,6 @@ void AAIUnit_CH7::Init()
 
 void AAIUnit_CH7::Handle_HealthDeath(AController* causer)
 {
+	onUnitDeath.Broadcast(causer, _PointValue);
+	Destroy();
 }
