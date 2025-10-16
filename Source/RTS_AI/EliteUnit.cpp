@@ -75,6 +75,4 @@ void AEliteUnit::MoveLocationReached_Implementation()
 		_commandQueue.Dequeue(command);
 		command->Execute();
 	}
-	
-	Execute_StopMoving(this);
 }
