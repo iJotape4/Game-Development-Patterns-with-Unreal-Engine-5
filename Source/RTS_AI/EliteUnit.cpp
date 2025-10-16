@@ -1,5 +1,6 @@
 #include "EliteUnit.h"
 
+#include "Command_UnitMove.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -54,12 +55,26 @@ void AEliteUnit::AttackTarget_Implementation(UObject* target)
 
 void AEliteUnit::QueueMoveLocation_Implementation(FVector targetLocation)
 {
-	
+	if (!_isMoving)
+	{
+		_AIController->GetBlackboardComponent()->SetValueAsVector("MoveToLocation", targetLocation);
+		_isMoving = true;
+		return;
+	}
+	TObjectPtr<UCommand_UnitMove> moveCommand = NewObject<UCommand_UnitMove>(this);
+	moveCommand->Init(this, targetLocation);
+	_commandQueue.Enqueue(moveCommand);
 }
 
 void AEliteUnit::MoveLocationReached_Implementation()
 {
-
+	_isMoving = false;
+	if (!_commandQueue.IsEmpty())
+	{
+		TObjectPtr<UCommand> command;
+		_commandQueue.Dequeue(command);
+		command->Execute();
+	}
 	
 	Execute_StopMoving(this);
 }

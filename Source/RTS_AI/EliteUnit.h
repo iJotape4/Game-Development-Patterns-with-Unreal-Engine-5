@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Command.h"
 #include "ControllableUnit.h"
 #include "GameFramework/Character.h"
 #include "EliteUnit.generated.h"
@@ -31,4 +32,7 @@ protected:
 	TObjectPtr<UBlackboardComponent> _Blackboard;
 	UPROPERTY(VisibleInstanceOnly)
 	bool _isMoving;
+
+private:
+	TQueue<TObjectPtr<UCommand>> _commandQueue;
 };
